@@ -2,6 +2,11 @@
 
 ## 1. System Design
 
+Three core actions a user should be able to perform:
+- add a pet
+- schedule a task
+- see today's tasks
+
 **a. Initial design**
 
 - Briefly describe your initial UML design.
