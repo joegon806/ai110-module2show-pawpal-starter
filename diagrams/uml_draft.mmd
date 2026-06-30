@@ -4,15 +4,14 @@ classDiagram
     class Owner {
         +str name
         +Pet[] pets
-        +create_owner() Owner
         +edit_info() void
         +add_pet(pet) void
+        +remove_pet(pet) void
     }
 
     class Pet {
         +str name
         +Owner owner
-        +create_pet() Pet
         +edit_info() void
     }
 
@@ -29,6 +28,7 @@ classDiagram
         +find_slot(task) time
         +add_constraint(constraint) void
         +remove_constraint(constraint) void
+        -_is_free(start, duration, ignore) bool
     }
 
     class AllocatedTime {
@@ -44,12 +44,12 @@ classDiagram
         +time preferred_time
         +Pet[] pets
         +is_scheduled() bool
-        +create_task() Task
+        +schedule_at(start) void
+        +unschedule() void
         +edit_task_info() void
     }
 
     class TimeConstraint {
-        +create_time_constraint() TimeConstraint
         +edit_time_constraint() void
     }
 
@@ -57,6 +57,11 @@ classDiagram
         +Task[] scheduled_tasks
         +Task[] unscheduled_tasks
         +str reasoning
+        +is_complete() bool
+        +note(message) void
+        +schedule(task) void
+        +skip(task, reason) void
+        +summary() str
     }
 
     AllocatedTime <|-- Task
