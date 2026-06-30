@@ -12,8 +12,8 @@ Three core actions a user should be able to perform:
 - Briefly describe your initial UML design.
 - What classes did you include, and what responsibilities did you assign to each?
 **The User and Pet profiles hold basic information about the User and stored Pets.**
-**DaySchedule keeps track of tasks.**
-**AllocatedTime is a Parent class for anything that has a start and end time on the DaySchedule. It derives Task (a task for a pet) and TimeConstraint (not a task but takes up time in the schedule).**
+**Scheduler keeps track of tasks.**
+**AllocatedTime is a Parent class for anything that has a start and end time on the Scheduler. It derives Task (a task for a pet) and TimeConstraint (not a task but takes up time in the schedule).**
 **DailyPlan holds all the scheduled and unscheduled tasks as well as the app's explanation for the schedule.**
 
 

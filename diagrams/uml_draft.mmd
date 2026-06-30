@@ -1,22 +1,22 @@
 classDiagram
     %% PawPal+ class diagram — keep in sync with the implementation.
 
-    class UserProfile {
+    class Owner {
         +str name
-        +PetProfile[] pets
-        +create_user_profile() UserProfile
+        +Pet[] pets
+        +create_owner() Owner
         +edit_info() void
         +add_pet(pet) void
     }
 
-    class PetProfile {
+    class Pet {
         +str name
-        +UserProfile owner
-        +create_pet_profile() PetProfile
+        +Owner owner
+        +create_pet() Pet
         +edit_info() void
     }
 
-    class DaySchedule {
+    class Scheduler {
         +time day_start
         +time day_end
         +Task[] tasks
@@ -42,7 +42,7 @@ classDiagram
         +int duration
         +Priority priority
         +time preferred_time
-        +PetProfile[] pets
+        +Pet[] pets
         +is_scheduled() bool
         +create_task() Task
         +edit_task_info() void
@@ -62,11 +62,11 @@ classDiagram
     AllocatedTime <|-- Task
     AllocatedTime <|-- TimeConstraint
 
-    UserProfile "1" o-- "*" PetProfile : owns
-    PetProfile "*" --> "1" UserProfile : owner
+    Owner "1" o-- "*" Pet : owns
+    Pet "*" --> "1" Owner : owner
 
-    DaySchedule "1" o-- "*" Task : schedules
-    DaySchedule "1" o-- "*" TimeConstraint : respects
-    Task "*" --> "*" PetProfile : assigned to
-    DaySchedule ..> DailyPlan : produces
+    Scheduler "1" o-- "*" Task : schedules
+    Scheduler "1" o-- "*" TimeConstraint : respects
+    Task "*" --> "*" Pet : assigned to
+    Scheduler ..> DailyPlan : produces
     DailyPlan o-- Task : contains
