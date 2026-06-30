@@ -1,0 +1,73 @@
+classDiagram
+    %% PawPal+ class diagram — keep in sync with the implementation.
+
+    class UserProfile {
+        +str name
+        +PetProfile[] pets
+        +create_user_profile() UserProfile
+        +edit_info() void
+        +add_pet(pet) void
+    }
+
+    class PetProfile {
+        +str name
+        +Task[] tasks
+        +UserProfile owner
+        +create_pet_profile() PetProfile
+        +edit_info() void
+    }
+
+    class DaySchedule {
+        +Task[] tasks
+        +TimeConstraint[] constraints
+        +generate_plan() DailyPlan
+        +add_task(task) void
+        +remove_task(task) void
+        +has_conflict(task) bool
+        +find_slot(task) time
+        +add_constraint(constraint) void
+        +remove_constraint(constraint) void
+        +assign_tasks_to_pet(pet) void
+    }
+
+    class AllocatedTime {
+        +str title
+        +time start_time
+        +time end_time
+        +overlaps(other) bool
+    }
+
+    class Task {
+        +int duration
+        +Priority priority
+        +time preferred_time
+        +time scheduled_start
+        +time scheduled_end
+        +PetProfile[] pets
+        +create_task() Task
+        +edit_task_info() void
+    }
+
+    class TimeConstraint {
+        +create_time_constraint() TimeConstraint
+        +edit_time_constraint() void
+    }
+
+    class DailyPlan {
+        +Task[] scheduled_tasks
+        +Task[] unscheduled_tasks
+        +str reasoning
+    }
+
+    AllocatedTime <|-- Task
+    AllocatedTime <|-- TimeConstraint
+
+    UserProfile "1" o-- "*" PetProfile : owns
+    PetProfile "*" --> "1" UserProfile : owner
+    PetProfile "1" o-- "*" Task : has
+
+    DaySchedule "1" o-- "*" Task : schedules
+    DaySchedule "1" o-- "*" TimeConstraint : respects
+    Task "*" --> "*" PetProfile : assigned to
+    DaySchedule ..> DailyPlan : produces
+    DailyPlan o-- Task : contains
