@@ -11,23 +11,24 @@ classDiagram
 
     class PetProfile {
         +str name
-        +Task[] tasks
         +UserProfile owner
         +create_pet_profile() PetProfile
         +edit_info() void
     }
 
     class DaySchedule {
+        +time day_start
+        +time day_end
         +Task[] tasks
         +TimeConstraint[] constraints
         +generate_plan() DailyPlan
+        +tasks_for(pet) Task[]
         +add_task(task) void
         +remove_task(task) void
         +has_conflict(task) bool
         +find_slot(task) time
         +add_constraint(constraint) void
         +remove_constraint(constraint) void
-        +assign_tasks_to_pet(pet) void
     }
 
     class AllocatedTime {
@@ -41,9 +42,8 @@ classDiagram
         +int duration
         +Priority priority
         +time preferred_time
-        +time scheduled_start
-        +time scheduled_end
         +PetProfile[] pets
+        +is_scheduled() bool
         +create_task() Task
         +edit_task_info() void
     }
@@ -64,7 +64,6 @@ classDiagram
 
     UserProfile "1" o-- "*" PetProfile : owns
     PetProfile "*" --> "1" UserProfile : owner
-    PetProfile "1" o-- "*" Task : has
 
     DaySchedule "1" o-- "*" Task : schedules
     DaySchedule "1" o-- "*" TimeConstraint : respects

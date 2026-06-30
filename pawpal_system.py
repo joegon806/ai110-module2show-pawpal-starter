@@ -46,15 +46,18 @@ class TimeConstraint(AllocatedTime):
 
 @dataclass(kw_only=True)
 class Task(AllocatedTime):
-    """A care task. duration + priority are user inputs; scheduled_* are
-    assigned by DaySchedule."""
+    """A care task. duration + priority are user inputs; the placed span is
+    stored in the inherited start_time/end_time, set by DaySchedule."""
 
     duration: int  # minutes
     priority: Priority
     preferred_time: time | None = None
-    scheduled_start: time | None = None
-    scheduled_end: time | None = None
+    # start_time / end_time inherited from AllocatedTime; None until scheduled.
     pets: list["PetProfile"] = field(default_factory=list)
+
+    @property
+    def is_scheduled(self) -> bool:
+        return self.start_time is not None
 
     @classmethod
     def create_task(cls, title: str, duration: int, priority: Priority) -> "Task":
@@ -67,8 +70,9 @@ class Task(AllocatedTime):
 @dataclass
 class PetProfile:
     name: str
-    tasks: list[Task] = field(default_factory=list)
     owner: "UserProfile | None" = None
+    # A pet's tasks are derived from DaySchedule.tasks_for(pet), not stored here,
+    # so there is a single source of truth for what gets scheduled.
 
     @classmethod
     def create_pet_profile(cls, name: str) -> "PetProfile":
@@ -105,12 +109,22 @@ class DailyPlan:
 
 @dataclass
 class DaySchedule:
-    """Scheduling engine: holds tasks + constraints and builds a DailyPlan."""
+    """Scheduling engine: holds tasks + constraints and builds a DailyPlan.
 
+    One schedule serves all pets; tasks are attributed to pets via Task.pets.
+    day_start/day_end bound the window find_slot() searches within.
+    """
+
+    day_start: time = time(7, 0)
+    day_end: time = time(22, 0)
     tasks: list[Task] = field(default_factory=list)
     constraints: list[TimeConstraint] = field(default_factory=list)
 
     def generate_plan(self) -> DailyPlan:
+        raise NotImplementedError
+
+    def tasks_for(self, pet: PetProfile) -> list[Task]:
+        """All tasks assigned to `pet` (derived view, not a stored list)."""
         raise NotImplementedError
 
     def add_task(self, task: Task) -> None:
@@ -131,7 +145,4 @@ class DaySchedule:
         raise NotImplementedError
 
     def remove_constraint(self, constraint: TimeConstraint) -> None:
-        raise NotImplementedError
-
-    def assign_tasks_to_pet(self, pet: PetProfile) -> None:
         raise NotImplementedError
