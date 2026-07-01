@@ -11,19 +11,28 @@ classDiagram
 
     class Pet {
         +str name
+        +str species
+        +str breed
+        +str notes
         +Owner owner
+        +Task[] tasks
         +edit_info() void
+        +add_task(task) void
+        +remove_task(task) void
+        +list_tasks(include_completed) Task[]
     }
 
     class Scheduler {
         +time day_start
         +time day_end
-        +Task[] tasks
+        +Pet[] pets
         +TimeConstraint[] constraints
+        +Task[] tasks
         +generate_plan() DailyPlan
+        +start_new_day() DailyPlan
         +tasks_for(pet) Task[]
-        +add_task(task) void
-        +remove_task(task) void
+        +add_pet(pet) void
+        +remove_pet(pet) void
         +has_conflict(task) bool
         +find_slot(task) time
         +add_constraint(constraint) void
@@ -33,6 +42,7 @@ classDiagram
 
     class AllocatedTime {
         +str title
+        +str description
         +time start_time
         +time end_time
         +overlaps(other) bool
@@ -43,9 +53,12 @@ classDiagram
         +Priority priority
         +time preferred_time
         +Pet[] pets
+        +bool completed
         +is_scheduled() bool
         +schedule_at(start) void
         +unschedule() void
+        +mark_complete() void
+        +mark_incomplete() void
         +edit_task_info() void
     }
 
@@ -70,8 +83,10 @@ classDiagram
     Owner "1" o-- "*" Pet : owns
     Pet "*" --> "1" Owner : owner
 
-    Scheduler "1" o-- "*" Task : schedules
+    Scheduler "1" o-- "*" Pet : plans for
     Scheduler "1" o-- "*" TimeConstraint : respects
+    Scheduler ..> Task : reads via pets
+    Pet "*" o-- "*" Task : has
     Task "*" --> "*" Pet : assigned to
     Scheduler ..> DailyPlan : produces
     DailyPlan o-- Task : contains
